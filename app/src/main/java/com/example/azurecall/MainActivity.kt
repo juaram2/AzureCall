@@ -2,15 +2,17 @@ package com.example.azurecall
 
 import android.Manifest
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.azure.android.communication.common.CommunicationUser
 import com.azure.android.communication.common.CommunicationUserCredential
-import com.azure.communication.calling.*
+import com.azure.communication.calling.CallAgent
+import com.azure.communication.calling.CallClient
+import com.azure.communication.calling.StartCallOptions
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,7 +26,7 @@ class MainActivity : AppCompatActivity() {
     createAgent()
 
     // Bind call button to call `startCall`
-    val callButton = findViewById<Button>(R.id.call_button)
+    val callButton: Button = findViewById<Button>(R.id.call_button)
     callButton.setOnClickListener { startCall() }
   }
 
@@ -48,7 +50,7 @@ class MainActivity : AppCompatActivity() {
    * Create the call agent for placing calls
    */
   private fun createAgent() {
-    val userToken = "endpoint=https://chazurecommunicationservices.communication.azure.com/;accesskey=t3TQUTIs1hrxGEL4BPJU2UcGZ7oE0kDIKoYyqet3yUPlAUKojrw5fUacu/hNAsVggxdPhnBRaCC6b8iwhduZ0g=="
+    val userToken = getString(R.string.user_token)
 
     try {
       val credential = CommunicationUserCredential(userToken)
@@ -64,9 +66,9 @@ class MainActivity : AppCompatActivity() {
   private fun startCall() {
     val calleeIdView = findViewById<EditText>(R.id.callee_id)
     val calleeId = calleeIdView.text.toString()
-    val startCallOptions = StartCallOptions()
+    val options = StartCallOptions()
 
-    callAgent?.call(this, arrayOf(CommunicationUser(calleeId)), startCallOptions)
+    callAgent?.call(applicationContext, arrayOf(CommunicationUser(calleeId)), options)
   }
 
 }
