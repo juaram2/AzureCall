@@ -1,0 +1,18 @@
+<component name="libraryTable">
+  <library name="Gradle: com.azure.android:azure-core:1.0.0-beta.1@aar">
+    <ANNOTATIONS>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e6af92ae20eb269ccadd1855c2b8e195/jetified-azure-core-1.0.0-beta.1/annotations.zip!/" />
+    </ANNOTATIONS>
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e6af92ae20eb269ccadd1855c2b8e195/jetified-azure-core-1.0.0-beta.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e6af92ae20eb269ccadd1855c2b8e195/jetified-azure-core-1.0.0-beta.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e6af92ae20eb269ccadd1855c2b8e195/jetified-azure-core-1.0.0-beta.1/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.azure.android/azure-core/1.0.0-beta.1/95963ce7de464a26607856874c36c6193b93135a/azure-core-1.0.0-beta.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.azure.android/azure-core/1.0.0-beta.1/360437a5739cfca449e7f7185de21ca831a0342/azure-core-1.0.0-beta.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
