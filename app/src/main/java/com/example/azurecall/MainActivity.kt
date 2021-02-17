@@ -3,16 +3,15 @@ package com.example.azurecall
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.view.View
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.azure.android.communication.common.CommunicationUser
 import com.azure.android.communication.common.CommunicationUserCredential
 import com.azure.communication.calling.*
 import java.util.*
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -41,7 +40,12 @@ class MainActivity : AppCompatActivity() {
    * Request each required permission if the app doesn't already have it.
    */
   private fun getAllPermissions() {
-    val requiredPermissions = arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE)
+    val requiredPermissions = arrayOf(
+      Manifest.permission.RECORD_AUDIO,
+      Manifest.permission.CAMERA,
+      Manifest.permission.WRITE_EXTERNAL_STORAGE,
+      Manifest.permission.READ_PHONE_STATE
+    )
     val permissionsToAskFor = ArrayList<String>()
     for (permission in requiredPermissions) {
       if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
@@ -82,10 +86,31 @@ class MainActivity : AppCompatActivity() {
     }
 
     val options = StartCallOptions()
-    call = callAgent!!.call(
-      applicationContext, arrayOf(CommunicationUser(calleeId)),
-      options
+    val desiredCamera: VideoDeviceInfo = CallClient().deviceManager.get().cameraList[0]
+    val currentVideoStream = LocalVideoStream(desiredCamera, applicationContext)
+    val videoOptions = VideoOptions(currentVideoStream)
+
+    // Render a local preview of video so the user knows that their video is being shared
+    val previewRenderer = Renderer(currentVideoStream, applicationContext)
+    val uiView: View = previewRenderer.createView(RenderingOptions(ScalingMode.Fit))
+    // Attach the uiView to a viewable location on the app at this point
+
+    var layout = findViewById<LinearLayout>(R.id.video_view)
+    layout.addView(uiView)
+
+//    GROUP CALL
+    val participants = arrayOf(
+      CommunicationUser("8:acs:14f91067-afaf-48ca-be0e-7f1c9890f559_00000006-7a88-01c0-ac00-343a0d00018f"),
+      CommunicationUser("8:acs:918597be-3f29-4680-a91a-b4f5e6758a17_00000008-4924-e125-99c6-593a0d000a24")
     )
+    val startCallOptions = StartCallOptions()
+    startCallOptions.videoOptions = videoOptions
+    call = callAgent!!.call(applicationContext, participants, startCallOptions)
+
+//    call = callAgent!!.call(
+//      applicationContext, arrayOf(CommunicationUser(calleeId)),
+//      options
+//    )
     call!!.addOnCallStateChangedListener { p: PropertyChangedEvent? ->
       setStatus(
         call!!.state.toString()
