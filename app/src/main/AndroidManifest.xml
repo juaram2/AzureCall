@@ -11,6 +11,10 @@
   <uses-permission android:name="android.permission.READ_PHONE_STATE" />
   <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE" tools:ignore="ProtectedPermissions" />
 
+  <!-- push notification -->
+  <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+  <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+
   <application
     android:allowBackup="true"
     android:icon="@mipmap/ic_launcher"
@@ -19,6 +23,14 @@
     android:supportsRtl="true"
     android:theme="@style/Theme.AzureCall">
     <uses-library android:name="org.apache.http.legacy" android:required="false"/>
+
+    <service
+        android:name=".MyFirebaseMessagingService"
+        android:exported="false">
+      <intent-filter>
+        <action android:name="com.google.firebase.MESSAGING_EVENT" />
+      </intent-filter>
+    </service>
 
     <activity android:name=".MainActivity">
       <intent-filter>

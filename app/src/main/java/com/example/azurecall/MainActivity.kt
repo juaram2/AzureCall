@@ -3,6 +3,7 @@ package com.example.azurecall
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +11,8 @@ import androidx.core.app.ActivityCompat
 import com.azure.android.communication.common.CommunicationUser
 import com.azure.android.communication.common.CommunicationUserCredential
 import com.azure.communication.calling.*
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.iid.FirebaseInstanceId
 import java.util.*
 
 
@@ -18,6 +21,7 @@ class MainActivity : AppCompatActivity() {
   private val UserToken =
     "eyJhbGciOiJSUzI1NiIsImtpZCI6IjEwMiIsIng1dCI6IjNNSnZRYzhrWVNLd1hqbEIySmx6NTRQVzNBYyIsInR5cCI6IkpXVCJ9.eyJza3lwZWlkIjoiYWNzOjE0ZjkxMDY3LWFmYWYtNDhjYS1iZTBlLTdmMWM5ODkwZjU1OV8wMDAwMDAwNi03YTg4LTAxYzAtYWMwMC0zNDNhMGQwMDAxOGYiLCJzY3AiOjE3OTIsImNzaSI6IjE2MDk4MzYyMTEiLCJpYXQiOjE2MDk4MzYyMTEsImV4cCI6MTYwOTkyMjYxMSwiYWNzU2NvcGUiOiJ2b2lwIiwicmVzb3VyY2VJZCI6IjE0ZjkxMDY3LWFmYWYtNDhjYS1iZTBlLTdmMWM5ODkwZjU1OSJ9.00Rqh27qzE2ARJ0wAZFgwkw9Byb5QMiPXqiFHMBAXHuz3o0rsIX6K-QBy2EXwIMmvPcv74garZmOynPuC9EPQ8uDWTp2QM2i93bx5eB88x_UBuEpTumV_mZf2cUkesCYtRL3TYgvLZwlx5m2txFvnvQu8EHAPWaiNDVKr2_9yvktarTeT-FZSEG8tx5zn0BKe4V-bd8ZCb3cJVvIVjGpppgQHJP9zbt5rxgz-KyoYIa3Nd1jPEY06Y9BE1BdO33OQVve2aJMqY44P0n7qtCk73t0AwXSEAibTIknDgUtpYRWcVi4Xkz6vqVP6drEn_JIMO3zRDi1L0UFkSSCOdM_hQ"
   private var callAgent: CallAgent? = null
+  private var callClient: CallClient? = null
   private var call: Call? = null
 
   var statusBar: TextView? = null
@@ -64,6 +68,19 @@ class MainActivity : AppCompatActivity() {
     try {
       val credential = CommunicationUserCredential(UserToken)
       callAgent = CallClient().createCallAgent(applicationContext, credential).get()
+
+      FirebaseInstanceId.getInstance().instanceId
+        .addOnCompleteListener(OnCompleteListener { task ->
+          if (!task.isSuccessful) {
+            Log.w("PushNotification", "getInstanceId failed", task.exception)
+            return@OnCompleteListener
+          }
+
+          // Get new Instance ID token
+          val deviceToken = task.result!!.token
+          // Log
+          Log.d("PushNotification", "$deviceToken : Device Registration token retrieved successfully")
+        })
     } catch (ex: Exception) {
       Toast.makeText(applicationContext, "Failed to create call agent.", Toast.LENGTH_SHORT).show()
     }
@@ -99,10 +116,7 @@ class MainActivity : AppCompatActivity() {
     layout.addView(uiView)
 
 //    GROUP CALL
-    val participants = arrayOf(
-      CommunicationUser("8:acs:14f91067-afaf-48ca-be0e-7f1c9890f559_00000006-7a88-01c0-ac00-343a0d00018f"),
-      CommunicationUser("8:acs:918597be-3f29-4680-a91a-b4f5e6758a17_00000008-4924-e125-99c6-593a0d000a24")
-    )
+    val participants = arrayOf(CommunicationUser(calleeId))
     val startCallOptions = StartCallOptions()
     startCallOptions.videoOptions = videoOptions
     call = callAgent!!.call(applicationContext, participants, startCallOptions)
@@ -143,4 +157,29 @@ class MainActivity : AppCompatActivity() {
   private fun setStatus(status: String) {
     runOnUiThread { statusBar!!.text = status }
   }
+
+  fun acceptCall() {
+    val appContext = this.applicationContext
+    val incomingCall: Call = retrieveIncomingCall()!!
+    val acceptCallOptions = AcceptCallOptions()
+    val desiredCamera: VideoDeviceInfo = callClient?.getDeviceManager()?.get()?.getCameraList()!!.get(0)
+    acceptCallOptions.videoOptions = VideoOptions(LocalVideoStream(desiredCamera, appContext))
+    incomingCall.accept(applicationContext, acceptCallOptions).get()
+  }
+
+  private fun retrieveIncomingCall(): Call? {
+    var incomingCall: Call? = null
+    callAgent!!.addOnCallsUpdatedListener { callsUpdatedEvent -> // Look for incoming call
+      val calls = callsUpdatedEvent.addedCalls
+      for (call in calls) {
+        if (call.state === CallState.Incoming) {
+          incomingCall = call
+          break
+        }
+      }
+    }
+    return incomingCall
+  }
+
+
 }

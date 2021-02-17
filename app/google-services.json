@@ -1,0 +1,90 @@
+{
+  "project_info": {
+    "project_number": "458555718648",
+    "firebase_url": "https://icloudhospital-1581316089782.firebaseio.com",
+    "project_id": "icloudhospital-1581316089782",
+    "storage_bucket": "icloudhospital-1581316089782.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:458555718648:android:127f1932ccdf608780b40d",
+        "android_client_info": {
+          "package_name": "com.example.azurecall"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "458555718648-9hr77eqga4qg361oe9husq9ca3nutea9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.azurecall",
+            "certificate_hash": "b9464425a9df0c5818baf704af34b0d44f73ba62"
+          }
+        },
+        {
+          "client_id": "458555718648-ch7a88jot7vl3d54l429ddtdi10h5uv4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.azurecall",
+            "certificate_hash": "1f86f884bc3bcabc3c8f68329eb0d51014fc5e1e"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcaiQPSZip1q-8LfUbL4XGb6SRKi1tPo0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "458555718648-1b9q73s8vi8anjp1j51jnh2n24c21rpd.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "458555718648-7bgdgjsermulqfds6n1e7dp9ka5hsbja.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.cloudhospital.stg"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:458555718648:android:b7f6a51d99af2f8f80b40d",
+        "android_client_info": {
+          "package_name": "com.cloudhospital.stg"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcaiQPSZip1q-8LfUbL4XGb6SRKi1tPo0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "458555718648-1b9q73s8vi8anjp1j51jnh2n24c21rpd.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "458555718648-7bgdgjsermulqfds6n1e7dp9ka5hsbja.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.cloudhospital.stg"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
