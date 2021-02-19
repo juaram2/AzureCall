@@ -43,19 +43,9 @@ class MainActivity : AppCompatActivity() {
 
     statusBar = findViewById<TextView>(R.id.status_bar)
 
-    var incomingCall: Call? = null
-    callAgent!!.addOnCallsUpdatedListener { callsUpdatedEvent -> // Look for incoming call
-      val calls = callsUpdatedEvent.addedCalls
-      for (call in calls) {
-        if (call.state == CallState.Incoming) {
-          incomingCall = call
-          break
-        }
-      }
-      incomingCall?.addOnCallStateChangedListener { state ->
-        Log.d("state", "$state")
-        Log.d("Notification", "The call state has changed.");
-      }
+    retrieveIncomingCall()?.addOnCallStateChangedListener{ state ->
+      Log.d("state", "$state")
+      Log.d("Notification", "The call state has changed.");
     }
 
     NotificationHub.setListener(CustomNotificationListener())
