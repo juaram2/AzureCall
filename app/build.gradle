@@ -53,4 +53,7 @@ dependencies {
     // Add the client library for Firebase Cloud Messaging
     implementation 'com.google.firebase:firebase-core:16.0.8'
     implementation 'com.google.firebase:firebase-messaging:20.2.4'
+    // Add azure notification hubs library
+    implementation 'com.microsoft.azure:notification-hubs-android-sdk-fcm:1.1.4'
 }
+

@@ -1,10 +1,8 @@
 package com.example.azurecall
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.widget.*
@@ -15,6 +13,7 @@ import com.azure.android.communication.common.CommunicationUserIdentifier
 import com.azure.communication.calling.*
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
+import com.microsoft.windowsazure.messaging.notificationhubs.NotificationHub
 import java.util.*
 
 
@@ -43,23 +42,16 @@ class MainActivity : AppCompatActivity() {
     callButton.setOnClickListener { startCall() }
 
     statusBar = findViewById<TextView>(R.id.status_bar)
-  }
 
-  override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
-    return super.onCreateView(name, context, attrs)
-
-//    var callStateChangeListener = PropertyChangedListener {
-//      fun onPropertyChanged(args: PropertyChangedEvent) {
-//        Log.d("", "The call state has changed")
+//    class callStateChangeListener: PropertyChangedListener {
+//      override fun onPropertyChanged(args: PropertyChangedEvent) {
+//        Log.d("Notification", "The call state has changed.");
 //      }
 //    }
-//    call?.addOnCallStateChangedListener(PropertyChangedListener {
-//
-//    });
+//    call!!.addOnCallStateChangedListener(callStateChangeListener);
 
-//unsubscribe
-//    call?.removeOnCallStateChangedListener(callStateChangeListener);
-
+    NotificationHub.setListener(CustomNotificationListener())
+    NotificationHub.start(application, "chnotification-int-voip", "Endpoint=sb://chhubns.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=Cjjoip6v+KpgR9QkUWqoZeCUYkxJCXTU5KDfgb07bWM=")
   }
 
   /**
@@ -201,7 +193,7 @@ class MainActivity : AppCompatActivity() {
     val appContext = this.applicationContext
     val incomingCall: Call = retrieveIncomingCall()!!
     val acceptCallOptions = AcceptCallOptions()
-    val desiredCamera: VideoDeviceInfo = callClient?.deviceManager?.get()?.cameraList!![0]
+    val desiredCamera: VideoDeviceInfo = callClient.deviceManager?.get()?.cameraList!![0]
     acceptCallOptions.videoOptions = VideoOptions(LocalVideoStream(desiredCamera, appContext))
     incomingCall.accept(applicationContext, acceptCallOptions).get()
   }

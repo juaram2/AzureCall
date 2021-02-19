@@ -1,7 +1,7 @@
 <resources>
   <string name="app_name">AzureCall</string>
 <!--  my id  -->
-  <string name="communication_user_id">8:acs:918597be-3f29-4680-a91a-b4f5e6758a17_00000008-4924-e125-99c6-593a0d000a24</string>
+  <string name="communication_my_id">8:acs:918597be-3f29-4680-a91a-b4f5e6758a17_00000008-4924-e125-99c6-593a0d000a24</string>
 <!--  help  -->
-<!--  <string name="communication_user_id">8:acs:918597be-3f29-4680-a91a-b4f5e6758a17_00000008-3b84-4e88-99c6-593a0d002bff</string>-->
+  <string name="communication_user_id">8:acs:918597be-3f29-4680-a91a-b4f5e6758a17_00000008-3b84-4e88-99c6-593a0d002bff</string>
 </resources>
