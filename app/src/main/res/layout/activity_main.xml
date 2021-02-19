@@ -22,7 +22,7 @@
       android:layout_height="wrap_content"
       android:ems="10"
       android:hint="Callee Id"
-      android:text="8:acs:918597be-3f29-4680-a91a-b4f5e6758a17_00000008-4924-e125-99c6-593a0d000a24"
+      android:text="@string/communication_user_id"
       android:inputType="textPersonName"
       app:layout_constraintBottom_toTopOf="@+id/call_button"
       app:layout_constraintTop_toBottomOf="@id/video_view"

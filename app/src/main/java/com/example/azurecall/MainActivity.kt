@@ -1,15 +1,17 @@
 package com.example.azurecall
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.azure.android.communication.common.CommunicationUser
-import com.azure.android.communication.common.CommunicationUserCredential
+import com.azure.android.communication.common.CommunicationTokenCredential
+import com.azure.android.communication.common.CommunicationUserIdentifier
 import com.azure.communication.calling.*
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
@@ -18,10 +20,13 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-  private val UserToken =
+  private val userToken =
+//  my token
+//    "eyJhbGciOiJSUzI1NiIsImtpZCI6IjEwMiIsIng1dCI6IjNNSnZRYzhrWVNLd1hqbEIySmx6NTRQVzNBYyIsInR5cCI6IkpXVCJ9.eyJza3lwZWlkIjoiYWNzOjkxODU5N2JlLTNmMjktNDY4MC1hOTFhLWI0ZjVlNjc1OGExN18wMDAwMDAwOC00OTI0LWUxMjUtOTljNi01OTNhMGQwMDBhMjQiLCJzY3AiOjE3OTIsImNzaSI6IjE2MTM2MTEyNDYiLCJpYXQiOjE2MTM2MTEyNDYsImV4cCI6MTYxMzY5NzY0NiwiYWNzU2NvcGUiOiJ2b2lwIiwicmVzb3VyY2VJZCI6IjkxODU5N2JlLTNmMjktNDY4MC1hOTFhLWI0ZjVlNjc1OGExNyJ9.atcaLBGgqtcgv78vHQYs3Z61ELQmgpM8EuQxtmwh_ZdQPb-waLCVtWzeJTYGzhlUxVN-KD-HiPpP4uqiC_CD-0-rx2Lfj-sOLepTwqXSoTfR4NDaqRvx2geYl2sY1n202b7Rs7y7TpStSsEjG91ysgkX75cD1NEFR8RTpyh-kPwxF34m9gc6oRUJy6geDp2H6kmbopaLoznbFg04oFJFD8suiOO5wMnFaa4GExnQxo1PtzyRroPyRc3PymrIzNs6bmQS3HWhy_gQIbX_D81si8tIY9ENtnvV--iQjGHXnFYc9ghOzIItXZt4D0Cw_9JbVUU2v8yGdqYRdt6-y222ng"
+//  help token
     "eyJhbGciOiJSUzI1NiIsImtpZCI6IjEwMiIsIng1dCI6IjNNSnZRYzhrWVNLd1hqbEIySmx6NTRQVzNBYyIsInR5cCI6IkpXVCJ9.eyJza3lwZWlkIjoiYWNzOjE0ZjkxMDY3LWFmYWYtNDhjYS1iZTBlLTdmMWM5ODkwZjU1OV8wMDAwMDAwNi03YTg4LTAxYzAtYWMwMC0zNDNhMGQwMDAxOGYiLCJzY3AiOjE3OTIsImNzaSI6IjE2MDk4MzYyMTEiLCJpYXQiOjE2MDk4MzYyMTEsImV4cCI6MTYwOTkyMjYxMSwiYWNzU2NvcGUiOiJ2b2lwIiwicmVzb3VyY2VJZCI6IjE0ZjkxMDY3LWFmYWYtNDhjYS1iZTBlLTdmMWM5ODkwZjU1OSJ9.00Rqh27qzE2ARJ0wAZFgwkw9Byb5QMiPXqiFHMBAXHuz3o0rsIX6K-QBy2EXwIMmvPcv74garZmOynPuC9EPQ8uDWTp2QM2i93bx5eB88x_UBuEpTumV_mZf2cUkesCYtRL3TYgvLZwlx5m2txFvnvQu8EHAPWaiNDVKr2_9yvktarTeT-FZSEG8tx5zn0BKe4V-bd8ZCb3cJVvIVjGpppgQHJP9zbt5rxgz-KyoYIa3Nd1jPEY06Y9BE1BdO33OQVve2aJMqY44P0n7qtCk73t0AwXSEAibTIknDgUtpYRWcVi4Xkz6vqVP6drEn_JIMO3zRDi1L0UFkSSCOdM_hQ"
   private var callAgent: CallAgent? = null
-  private var callClient: CallClient? = null
+  private var callClient = CallClient()
   private var call: Call? = null
 
   var statusBar: TextView? = null
@@ -38,6 +43,23 @@ class MainActivity : AppCompatActivity() {
     callButton.setOnClickListener { startCall() }
 
     statusBar = findViewById<TextView>(R.id.status_bar)
+  }
+
+  override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
+    return super.onCreateView(name, context, attrs)
+
+//    var callStateChangeListener = PropertyChangedListener {
+//      fun onPropertyChanged(args: PropertyChangedEvent) {
+//        Log.d("", "The call state has changed")
+//      }
+//    }
+//    call?.addOnCallStateChangedListener(PropertyChangedListener {
+//
+//    });
+
+//unsubscribe
+//    call?.removeOnCallStateChangedListener(callStateChangeListener);
+
   }
 
   /**
@@ -62,12 +84,33 @@ class MainActivity : AppCompatActivity() {
   }
 
   /**
+   * Ensure all permissions were granted, otherwise inform the user permissions are missing.
+   */
+  override fun onRequestPermissionsResult(
+    requestCode: Int,
+    permissions: Array<String?>,
+    grantResults: IntArray
+  ) {
+    var allPermissionsGranted = true
+    for (result in grantResults) {
+      allPermissionsGranted =
+        allPermissionsGranted and (result == PackageManager.PERMISSION_GRANTED)
+    }
+    if (!allPermissionsGranted) {
+      Toast.makeText(this, "All permissions are needed to make the call.", Toast.LENGTH_LONG).show()
+      finish()
+    }
+  }
+
+  /**
    * Create the call agent for placing calls
    */
   private fun createAgent() {
     try {
-      val credential = CommunicationUserCredential(UserToken)
-      callAgent = CallClient().createCallAgent(applicationContext, credential).get()
+      val credential = CommunicationTokenCredential(userToken)
+      val callAgentOption = CallAgentOptions()
+      callAgentOption.displayName = "Test"
+      callAgent = callClient.createCallAgent(applicationContext, credential, callAgentOption).get()
 
       FirebaseInstanceId.getInstance().instanceId
         .addOnCompleteListener(OnCompleteListener { task ->
@@ -90,7 +133,7 @@ class MainActivity : AppCompatActivity() {
    * Place a call to the callee id provided in `callee_id` text input.
    */
   private fun startCall() {
-    if (UserToken.startsWith("<")) {
+    if (userToken.startsWith("<")) {
       Toast.makeText(this, "Please enter token in source code", Toast.LENGTH_SHORT).show()
       return
     }
@@ -102,52 +145,37 @@ class MainActivity : AppCompatActivity() {
       return
     }
 
-    val options = StartCallOptions()
-    val desiredCamera: VideoDeviceInfo = CallClient().deviceManager.get().cameraList[0]
+    val deviceManager = callClient.deviceManager.get()
+    deviceManager.let {
+
+    }
+    var defaultMicrophone = deviceManager.microphoneList[0]
+    var defaultSpeaker = deviceManager.speakerList[0]
+    deviceManager.microphone = defaultMicrophone
+    deviceManager.speaker = defaultSpeaker
+
+    val desiredCamera: VideoDeviceInfo = deviceManager.cameraList[0]
     val currentVideoStream = LocalVideoStream(desiredCamera, applicationContext)
     val videoOptions = VideoOptions(currentVideoStream)
 
     // Render a local preview of video so the user knows that their video is being shared
     val previewRenderer = Renderer(currentVideoStream, applicationContext)
     val uiView: View = previewRenderer.createView(RenderingOptions(ScalingMode.Fit))
-    // Attach the uiView to a viewable location on the app at this point
 
     var layout = findViewById<LinearLayout>(R.id.video_view)
     layout.addView(uiView)
 
-//    GROUP CALL
-    val participants = arrayOf(CommunicationUser(calleeId))
+    val acsUserId = CommunicationUserIdentifier(calleeId)
+    val participants = arrayOf(acsUserId)
+
     val startCallOptions = StartCallOptions()
     startCallOptions.videoOptions = videoOptions
     call = callAgent!!.call(applicationContext, participants, startCallOptions)
 
-//    call = callAgent!!.call(
-//      applicationContext, arrayOf(CommunicationUser(calleeId)),
-//      options
-//    )
     call!!.addOnCallStateChangedListener { p: PropertyChangedEvent? ->
       setStatus(
         call!!.state.toString()
       )
-    }
-  }
-
-  /**
-   * Ensure all permissions were granted, otherwise inform the user permissions are missing.
-   */
-  override fun onRequestPermissionsResult(
-    requestCode: Int,
-    permissions: Array<String?>,
-    grantResults: IntArray
-  ) {
-    var allPermissionsGranted = true
-    for (result in grantResults) {
-      allPermissionsGranted =
-        allPermissionsGranted and (result == PackageManager.PERMISSION_GRANTED)
-    }
-    if (!allPermissionsGranted) {
-      Toast.makeText(this, "All permissions are needed to make the call.", Toast.LENGTH_LONG).show()
-      finish()
     }
   }
 
@@ -158,11 +186,22 @@ class MainActivity : AppCompatActivity() {
     runOnUiThread { statusBar!!.text = status }
   }
 
-  fun acceptCall() {
+  fun getCall(callId: String): Call? {
+    call.let {
+      val currentCallId: String? = call!!.callId
+      if (currentCallId == callId) {
+        return call
+      } else {
+        return null
+      }
+    }
+  }
+
+  private fun acceptCall() {
     val appContext = this.applicationContext
     val incomingCall: Call = retrieveIncomingCall()!!
     val acceptCallOptions = AcceptCallOptions()
-    val desiredCamera: VideoDeviceInfo = callClient?.getDeviceManager()?.get()?.getCameraList()!!.get(0)
+    val desiredCamera: VideoDeviceInfo = callClient?.deviceManager?.get()?.cameraList!![0]
     acceptCallOptions.videoOptions = VideoOptions(LocalVideoStream(desiredCamera, appContext))
     incomingCall.accept(applicationContext, acceptCallOptions).get()
   }
@@ -180,6 +219,4 @@ class MainActivity : AppCompatActivity() {
     }
     return incomingCall
   }
-
-
 }
