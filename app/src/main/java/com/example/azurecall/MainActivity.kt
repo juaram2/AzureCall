@@ -43,12 +43,20 @@ class MainActivity : AppCompatActivity() {
 
     statusBar = findViewById<TextView>(R.id.status_bar)
 
-//    class callStateChangeListener: PropertyChangedListener {
-//      override fun onPropertyChanged(args: PropertyChangedEvent) {
-//        Log.d("Notification", "The call state has changed.");
-//      }
-//    }
-//    call!!.addOnCallStateChangedListener(callStateChangeListener);
+    var incomingCall: Call? = null
+    callAgent!!.addOnCallsUpdatedListener { callsUpdatedEvent -> // Look for incoming call
+      val calls = callsUpdatedEvent.addedCalls
+      for (call in calls) {
+        if (call.state == CallState.Incoming) {
+          incomingCall = call
+          break
+        }
+      }
+      incomingCall?.addOnCallStateChangedListener { state ->
+        Log.d("state", "$state")
+        Log.d("Notification", "The call state has changed.");
+      }
+    }
 
     NotificationHub.setListener(CustomNotificationListener())
     NotificationHub.start(application, "chnotification-int-voip", "Endpoint=sb://chhubns.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=Cjjoip6v+KpgR9QkUWqoZeCUYkxJCXTU5KDfgb07bWM=")
